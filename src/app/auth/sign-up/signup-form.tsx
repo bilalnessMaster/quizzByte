@@ -8,7 +8,8 @@ import Link from "next/link";
 import Image from 'next/image';
 import { gender } from "@/constants/formsData";
 import { createAccountWithCredentials, signInWithGoogle } from "../lib/action";
-import { State } from "@/constants/types";
+import { State } from "@/types/types";
+
 
 
 
@@ -99,12 +100,12 @@ placeholder="Smith"
         </div>
         <div className="grid grid-cols-2 text-xs text-red-700">
         {
-    state.errors?.firstName && state.errors.firstName.map((error , index)=><p key={index}>
+    state?.errors?.firstName && state?.errors?.firstName.map((error , index)=><p key={index}>
         {error}
     </p>)
 }
 {
-    state.errors?.lastName && state.errors.lastName.map((error ,index)=><p key={index} >
+    state?.errors?.lastName && state.errors?.lastName.map((error ,index)=><p key={index} >
         {error}
     </p>)
 }

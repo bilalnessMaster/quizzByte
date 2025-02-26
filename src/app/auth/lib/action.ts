@@ -2,10 +2,10 @@
 
 import { AuthError } from "next-auth";
 import { z } from "zod";
-import User from "@/models/User.model";
-import dbConnect from "@/lib/db";
 import { signIn, signOut } from "@/auth";
 import { State } from "@/types/types";
+import prisma, { testConnection } from "@/lib/db";
+import bcrypt from "bcryptjs";
 function handleAuthError(error: unknown): string {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -31,6 +31,7 @@ export const  authenticate = async (prevState : string | undefined, formData : F
         password  : formData.get("password")
     })
 
+    console.log(validation.data);
 
     try {
         if(!validation.success){
@@ -63,6 +64,8 @@ export const signInWithGoogle = async (callbackUrl: string) => {
 
 export const createAccountWithCredentials = async (prevState : State, formData : FormData) =>{
     try {
+        console.log('entre to the func');
+
         const validation = formDataSchema.safeParse({
             email : formData.get("email") ,
             password  : formData.get("password"),
@@ -75,20 +78,40 @@ export const createAccountWithCredentials = async (prevState : State, formData :
             return {
                 errors : validation.error.flatten().fieldErrors,
                 message : "Please fill out all fields correctly."
+
             }
         }
-        await dbConnect()
+
         const {email,password,firstName,lastName,gender } = validation.data
-        const isAlreadyExist = await User.findOne({email})
+
+        console.log('Checking if user already exists...');
+        const isAlreadyExist = await prisma.User.findUnique({
+          where: { email },
+        });
+        console.log('User exists:', isAlreadyExist);
         if(isAlreadyExist) return {message : "An account with this email already exists."}
-        const user = await User.create({
-            email,password,firstName,lastName, gender
+
+        console.log("what is this "+isAlreadyExist);
+        const hashPwd = await bcrypt.hash(password , 10)
+        const user = await prisma.user.create({
+            data : {
+                email,
+                password: hashPwd,
+                firstName,
+                lastName,
+                gender,
+                isAdmin : false ,
+                streak : 0 ,
+                longestStreak: 0 ,
+                lastAttemptDate: new Date(),
+            }
         })
         if(!user) return {message : "Failed to create user."}
         return {
             message : "Account created successfully.",
         }
     } catch (error) {
+
         console.log(error);
 
         return {
@@ -96,13 +119,3 @@ export const createAccountWithCredentials = async (prevState : State, formData :
         }
     }
 }
-
-export const config = {
-    runtime: 'nodejs',
-    unstable_allowDynamic: [
-        // allows a single file
-        "/src/db/lib/dbConnect.js",
-        // use a glob to allow anything in the function-bind 3rd party module
-        "/node_modules/mongoose/dist/**",
-    ],
-  };

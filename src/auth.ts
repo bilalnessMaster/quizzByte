@@ -1,14 +1,16 @@
 import NextAuth, { User as UserProps } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-import dbConnect from "./lib/db";
-import User  from "./models/User.model";
 import { z, ZodError } from "zod";
+import Google from "next-auth/providers/google";
+import prisma from "@/lib/db";
+import bcrypt from 'bcryptjs'
+import { User } from "@prisma/client";
+
 const googleClientId = process.env.AUTH_GOOGLE_ID
 const googleClientSecret = process.env.AUTH_GOOGLE_SECRET
-import Google from "next-auth/providers/google";
 if (!googleClientId || !googleClientSecret) {
     throw new Error("Google client ID or secret is missing")
-  }
+}
 const formDataSchema = z.object({
     firstName : z.string().min(2),
     lastName : z.string().min(2),
@@ -19,24 +21,26 @@ const formDataSchema = z.object({
 const signInSchema = formDataSchema.omit({firstName : true , lastName : true , gender :true})
 export const getUser = async (email : string , password : string)  =>{
     try {
-        await dbConnect();
-        const user = await  User.findOne({email});
+
+        const user = await  prisma.user.findUnique({where :{ email}});
         if (!user) throw new Error("User not found")
-        const isMatch= await  user.comparePassword(password);
+        const isMatch= await  bcrypt.compare(password, user?.password);
         if(!isMatch) return null;
         return user;
     } catch (error) {
         console.log("while getting user "+error);
-
+        throw new Error("User not found")
     }
 }
 export const createUser = async ({email, firstName , lastName , gender} :UserProps) =>{
 try {
-    const user = await User.create({
-        email ,
-        firstName ,
-        lastName ,
-        gender
+    const user = await prisma.user.create({
+        data : {
+            email ,
+            firstName ,
+            lastName ,
+            gender
+        }
     })
     return user
 } catch (error) {
@@ -46,15 +50,15 @@ try {
 }
 }
 
-function assignUserProperties(user: UserProps, dbUser: UserProps & {_id: string}) {
-    user.id = dbUser._id.toString()
+function assignUserProperties(user: User, dbUser: User ) {
+    user.id = dbUser.id.toString()
     user.email = dbUser.email
     user.firstName = dbUser.firstName
     user.lastName = dbUser.lastName
     user.isAdmin = dbUser.isAdmin
     user.streak = dbUser.streak
     user.gender = dbUser.gender
-  }
+}
 
 
 
@@ -90,12 +94,14 @@ export const { handlers, signIn, signOut, auth ,} = NextAuth({
         },
         async signIn({user, account , profile}){
             if(account?.provider == "google"){
-               const isAlreadyExist = await User.findOne({email : profile?.email})
+               const isAlreadyExist = await prisma.user.findUnique({
+                where : {email : profile?.email}
+               })
                if(isAlreadyExist){
                 assignUserProperties(user , isAlreadyExist)
                 return !!isAlreadyExist
                }
-               const  newUser = await createUser({ email:profile?.email  , firstName : profile?.given_name! ,lastName: profile?.family_name! , gender : profile?.gender! })
+               const  newUser = await createUser({ email:profile?.email  , firstName : profile?.given_name ,lastName: profile?.family_name , gender : profile?.gender })
                assignUserProperties(user , newUser)
                return !!newUser
             }
@@ -150,12 +156,3 @@ export const { handlers, signIn, signOut, auth ,} = NextAuth({
   ],
 
 })
-export const config = {
-    runtime: 'nodejs',
-    unstable_allowDynamic: [
-        // allows a single file
-        "/src/db/lib/dbConnect.js",
-        // use a glob to allow anything in the function-bind 3rd party module
-        "/node_modules/mongoose/dist/**",
-    ],
-  };
