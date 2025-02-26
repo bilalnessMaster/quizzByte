@@ -96,3 +96,7 @@ export const createAccountWithCredentials = async (prevState : State, formData :
         }
     }
 }
+
+export const config = {
+    runtime: 'nodejs',
+  };
