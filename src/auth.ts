@@ -46,7 +46,7 @@ try {
 }
 }
 
-function assignUserProperties(user: any, dbUser: any) {
+function assignUserProperties(user: UserProps, dbUser: UserProps & {_id: string}) {
     user.id = dbUser._id.toString()
     user.email = dbUser.email
     user.firstName = dbUser.firstName
@@ -95,7 +95,7 @@ export const { handlers, signIn, signOut, auth ,} = NextAuth({
                 assignUserProperties(user , isAlreadyExist)
                 return !!isAlreadyExist
                }
-               const  newUser = await createUser({ email:profile?.email , firstName : profile?.given_name! ,lastName: profile?.family_name! , gender : profile?.gender! })
+               const  newUser = await createUser({ email:profile?.email  , firstName : profile?.given_name! ,lastName: profile?.family_name! , gender : profile?.gender! })
                assignUserProperties(user , newUser)
                return !!newUser
             }

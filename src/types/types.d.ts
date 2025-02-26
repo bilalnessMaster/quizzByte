@@ -14,12 +14,21 @@ declare module "next-auth" {
     }
 
     interface Session {
+        id?:string,
+        firstName?: stringl  ,
+        lastName?:string  ,
+        email?: string| null ,
+        isAdmin?: boolean  ,
+        gender?: string | null,
+        streak?: number,
+        password?:string
+        isAdmin? : boolean
 
     }
   }
 
 
-  import { JWT } from "next-auth/jwt"
+  import type  { JWT } from "next-auth/jwt"
 
   declare module "next-auth/jwt" {
 
@@ -29,7 +38,7 @@ declare module "next-auth" {
         lastName?:string  ,
         email?: string| null ,
         isAdmin?: boolean  ,
-        gender?: string,
+        gender?: string | null,
         streak?: number,
         password?:string
         isAdmin? : boolean

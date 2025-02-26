@@ -6,7 +6,6 @@ import User from "@/models/User.model";
 import dbConnect from "@/lib/db";
 import { signIn, signOut } from "@/auth";
 import { State } from "@/types/types";
-import { revalidatePath } from "next/cache";
 function handleAuthError(error: unknown): string {
     if (error instanceof AuthError) {
       switch (error.type) {

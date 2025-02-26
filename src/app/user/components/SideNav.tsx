@@ -33,16 +33,16 @@ import { useSession } from "next-auth/react"
   };
 
   const SideNav = () => {
-    //   console.log(dark);
+
       const {data : session}  = useSession({ required: true })
-        console.log(session);
 
 
-      // const {data : AuthUser} = useQuery<any>({queryKey : ['AuthUser']})
+
+
     const [isOpen, setIsOpen] = useState(false);
     const containerController = useAnimationControls();
     const [search , setSearch]= useState('')
-    const [linksItems , setlinksItems]= useState(links)
+
 
     useEffect(() => {
       if (isOpen) {
@@ -52,18 +52,8 @@ import { useSession } from "next-auth/react"
       }
     }, [isOpen ,containerController]);
 
-    useEffect(() => {
-     if(search){
-      const regx = new RegExp(search , 'igm')
-      const copy = [...linksItems]
-      const filter = copy.filter((item)=> item.name.match(regx))
-      return setlinksItems(filter)
+    const filteredLinks = search ? links.filter((item) => new RegExp(search, "igm").test(item.name)) : links;
 
-     }else{
-        return setlinksItems(links)
-     }
-    },[search,setlinksItems]);
-    console.log('render');
 
     return (
       <motion.aside
@@ -112,9 +102,9 @@ import { useSession } from "next-auth/react"
             <div className="">
               <label
                 htmlFor="Search"
-                className={twMerge(
+                className={cn(
                   "relative opacity-0 transition-all  ",
-                  isOpen && "opacity-100"
+                {"opacity-100"  :isOpen}
                 )}
               >
                 <input
@@ -133,13 +123,13 @@ import { useSession } from "next-auth/react"
               </label>
             </div>
             <div className="px-1 flex flex-col gap-2">
-              {linksItems.map(({ name, href, icon }, index) => (
+              {filteredLinks.map(({ name, href, icon }, index) => (
                <LinksItem key={index} name={name} href={href} icon={icon} isOpen={isOpen} />
               ))}
             </div>
           </div>
         </div>
-        <div className="mt-16">
+        <div className="">
           <Logout user={session?.user} isOpen={isOpen}/>
         </div>
       </motion.aside>
