@@ -4,7 +4,7 @@ import { AuthError } from "next-auth";
 import { z } from "zod";
 import { signIn, signOut } from "@/auth";
 import { State } from "@/types/types";
-import prisma, { testConnection } from "@/lib/db";
+import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 function handleAuthError(error: unknown): string {
     if (error instanceof AuthError) {
@@ -85,7 +85,7 @@ export const createAccountWithCredentials = async (prevState : State, formData :
         const {email,password,firstName,lastName,gender } = validation.data
 
         console.log('Checking if user already exists...');
-        const isAlreadyExist = await prisma.User.findUnique({
+        const isAlreadyExist = await prisma.user.findUnique({
           where: { email },
         });
         console.log('User exists:', isAlreadyExist);
