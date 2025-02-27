@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+'use client'
 import Background from "../component/Background"
 import SigninForm from "./SignIn-form"
 
@@ -10,10 +10,10 @@ const page = () => {
         <Background />
         </div>
         <div className="flex-1 flex justify-center items-center h-full ">
-            <Suspense>
+
             <SigninForm />
 
-            </Suspense>
+
         </div>
 
     </div>
