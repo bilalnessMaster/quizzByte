@@ -1,4 +1,4 @@
-
+''
 
 const Background = () => {
 
@@ -10,7 +10,7 @@ const Background = () => {
             <div className="z-20 absolute  p-24">
               <h1 className="text-8xl max-w-2xl font-medium font-bricolage px-2 text-neutral-200">Digital platform for creating quizzes and QCMs.</h1>
             </div>
-            <div className="h-full rounded-lg">
+            {/* <div className="h-full rounded-lg">
             <video
              src="/background.mp4"
               width="320" height="240"
@@ -23,7 +23,7 @@ const Background = () => {
                <source src="/public/background.mp4" type="video/mp4" />
             </video>
 
-            </div>
+            </div> */}
           </div>
         </div>
       );

@@ -88,10 +88,10 @@ export const createAccountWithCredentials = async (prevState : State, formData :
         const isAlreadyExist = await prisma.user.findUnique({
           where: { email },
         });
-        console.log('User exists:', isAlreadyExist);
+
         if(isAlreadyExist) return {message : "An account with this email already exists."}
 
-        console.log("what is this "+isAlreadyExist);
+
         const hashPwd = await bcrypt.hash(password , 10)
         const user = await prisma.user.create({
             data : {

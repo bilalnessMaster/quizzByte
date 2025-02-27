@@ -13,7 +13,7 @@ const SigninForm = () => {
 
 
   return (
-    <section className="space-y-8 w-full md:w-2/5 px-2  ">
+    <div  className="space-y-8 w-full md:w-2/5 px-2  ">
       <TilteHeader
         title="Welcome, back 👋"
         description="What are you waiting for, sign in !!"
@@ -80,7 +80,7 @@ const SigninForm = () => {
           </Link>
         </div>
       </form>
-    </section>
+    </div>
   );
 };
 
