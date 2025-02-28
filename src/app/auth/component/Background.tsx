@@ -8,7 +8,7 @@ const Background = () => {
           <div className="h-full relative w-full ">
             <div className="bg-gradient-to-br h-full w-full rounded-xl from-black to-transparent absolute z-20 " />
             <div className="z-20 absolute  p-24">
-              <h1 className="text-8xl max-w-2xl font-medium font-bricolage px-2 text-neutral-200">Digital platform for creating quizzes and QCMs.</h1>
+              <h1 className="text-8xl max-w-2xl font-medium font-bricolage px-2 text-neutral-100">Digital platform for creating quizzes and QCMs.</h1>
             </div>
             <div className="h-full rounded-lg">
             <video
