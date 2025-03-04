@@ -1,5 +1,5 @@
 'use client'
-import { toast, Toaster } from "sonner";
+import { toast} from "sonner";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useActionState, useEffect, useState } from "react";
 import { motion } from "framer-motion";
@@ -29,7 +29,7 @@ const SignupForm = () => {
 
   return (
     <section className="space-y-8 px-2 w-full sm:w-2/5 ">
-        <Toaster />
+
       <TilteHeader
         title="hey , hello 👋"
         description="Join our platform for creating and managing professional quizzes and QCMs"

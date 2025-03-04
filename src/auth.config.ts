@@ -3,6 +3,8 @@ import prisma from './lib/db';
 import { UserProps } from './types/types';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
+import { User } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 // https://nextjs.org/learn/dashboard-app/adding-metadata
 
 const formDataSchema = z.object({
@@ -26,14 +28,13 @@ export const getUser = async (email : string , password : string)  =>{
         throw new Error("User not found")
     }
 }
-export const createUser = async ({email, firstName , lastName , gender} :UserProps) =>{
+export const createUser = async ({email, firstName , lastName} :UserProps) =>{
 try {
     const user = await prisma.user.create({
         data : {
             email ,
             firstName ,
             lastName ,
-            gender
         }
     })
     return user
@@ -44,14 +45,13 @@ try {
 }
 }
 
-function assignUserProperties(user: UserProps, dbUser: UserProps ) {
-    user.id = dbUser.id.toString()
+function assignUserProperties(user: JWT, dbUser: User ) {
+    user.id = dbUser.id
     user.email = dbUser.email
     user.firstName = dbUser.firstName
     user.lastName = dbUser.lastName
     user.isAdmin = dbUser.isAdmin
-    user.streak = dbUser.streak
-    user.gender = dbUser.gender
+    user.firstTime = dbUser.firstTime
 }
 export const authConfig = {
   pages: {
@@ -60,13 +60,12 @@ export const authConfig = {
   callbacks: {
     async session({session , token}){
         if(token?.sub){
-        session.user.id = token.sub ?? ""
-        session.user.email = token.email ?? ""
+        session.user.id = token.id
+        session.user.email = token.email
         session.user.firstName = token.firstName ?? ""
         session.user.lastName= token.lastName ?? ""
         session.user.isAdmin = token.isAdmin ?? false
-        session.user.streak = token.streak ?? 0
-        session.user.gender = token.gender ?? ""
+        session.user.firstTime  = token.firstTime ?? true
         }
         return session
     },
@@ -74,13 +73,6 @@ export const authConfig = {
     async jwt({user ,token}){
         if(user){
             assignUserProperties(token , user)
-            token.id = user.id
-            token.gender = user?.gender
-            token.firstName = user?.firstName
-            token.lastName = user?.lastName
-            token.email = user?.email
-            token.streak = user?.streak
-            token.isAdmin = user?.isAdmin
         }
         return token
     },
@@ -93,7 +85,7 @@ export const authConfig = {
             assignUserProperties(user , isAlreadyExist)
             return !!isAlreadyExist
            }
-           const  newUser = await createUser({ email:profile?.email  , firstName : profile?.given_name ,lastName: profile?.family_name , gender : profile?.gender })
+           const  newUser = await createUser({ email:profile?.email  , firstName : profile?.given_name ,lastName: profile?.family_name  })
            assignUserProperties(user , newUser)
            return !!newUser
         }

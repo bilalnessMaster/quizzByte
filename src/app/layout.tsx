@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import {Instrument_Sans, Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+
+import QueryProvider from "@/components/QueryProvider";
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
 })
 const instrument = Instrument_Sans({
     subsets : ['latin']
 })
+
 const AuthProvider = ({ children }) => {
-    return <SessionProvider>{children}</SessionProvider>;
+    return <SessionProvider>{children}</SessionProvider>
   };
 
 
@@ -26,14 +29,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
       <body
         className={`${instrument.className} ${bricolage.className} antialiased`}
       >
         <AuthProvider>
 
+        <QueryProvider >
+
         {children}
+        </QueryProvider>
         </AuthProvider>
       </body>
+
     </html>
   );
 }

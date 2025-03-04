@@ -82,7 +82,7 @@ export const createAccountWithCredentials = async (prevState : State, formData :
             }
         }
 
-        const {email,password,firstName,lastName,gender } = validation.data
+        const {email,password,firstName,lastName} = validation.data
 
         console.log('Checking if user already exists...');
         const isAlreadyExist = await prisma.user.findUnique({
@@ -99,11 +99,7 @@ export const createAccountWithCredentials = async (prevState : State, formData :
                 password: hashPwd,
                 firstName,
                 lastName,
-                gender,
                 isAdmin : false ,
-                streak : 0 ,
-                longestStreak: 0 ,
-                lastAttemptDate: new Date(),
             }
         })
         if(!user) return {message : "Failed to create user."}

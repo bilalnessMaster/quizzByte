@@ -12,6 +12,8 @@ import dark from '@/assests/logo/dark.png'
 import light from '@/assests/logo/light.png'
 import { cn } from "@/lib/utils";
 import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation";
+
 
   const container = {
     close: {
@@ -33,11 +35,8 @@ import { useSession } from "next-auth/react"
   };
 
   const SideNav = () => {
-
+    const router = useRouter();
       const {data : session}  = useSession({ required: true })
-
-
-
 
     const [isOpen, setIsOpen] = useState(false);
     const containerController = useAnimationControls();
@@ -53,7 +52,12 @@ import { useSession } from "next-auth/react"
     }, [isOpen ,containerController]);
 
     const filteredLinks = search ? links.filter((item) => new RegExp(search, "igm").test(item.name)) : links;
+    useEffect(() => {
+        if(session?.user?.firstTime){
+            router.push('/user/onboarding')
 
+        }
+    },[router,session?.user?.firstTime])
 
     return (
       <motion.aside

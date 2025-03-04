@@ -2,6 +2,7 @@
 
 
 
+import { Toaster } from "sonner"
 import SideNav from "./components/SideNav"
 
 
@@ -17,6 +18,7 @@ const layout = async  ({children} : {children : React.ReactNode}) => {
         </div>
         <div className="flex-grow md:overflow-y-auto">
             {children}
+         <Toaster />
         </div>
     </div>
 

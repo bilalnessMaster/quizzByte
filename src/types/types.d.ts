@@ -2,27 +2,23 @@ import { StaticImageData } from "next/image"
 declare module "next-auth" {
 
     interface User {
-    id?:string | null ,
+    id?:number | null ,
     firstName?: string ,
     lastName?:string ,
     email?: string | null,
     isAdmin?: boolean ,
-    gender?: string ,
-    streak?: number ,
     password?:string
-    isAdmin? : boolean
+    firstTime ?: boolean,
     }
 
     interface Session {
-        id?:string,
-        firstName?: stringl  ,
+        id?:number,
+        firstName?: string ,
         lastName?:string  ,
         email?: string| null ,
         isAdmin?: boolean  ,
-        gender?: string | null,
-        streak?: number,
+        firstTime ?: boolean,
         password?:string
-        isAdmin? : boolean
 
     }
   }
@@ -33,30 +29,26 @@ declare module "next-auth" {
   declare module "next-auth/jwt" {
 
     interface JWT {
-        id?:string,
-        firstName?: stringl  ,
-        lastName?:string  ,
-        email?: string| null ,
-        isAdmin?: boolean  ,
-        gender?: string | null,
-        streak?: number,
+        id?:number | null ,
+        firstName?: string ,
+        lastName?:string ,
+        email?: string | null,
+        isAdmin?: boolean ,
         password?:string
-        isAdmin? : boolean
+        firstTime ?: boolean,
         idToken?: string
     }
   }
 
 
 export interface UserProps {
-    id?:string,
+    id?:number,
     firstName?: string ,
     lastName?:string ,
     email?: string ,
     isAdmin?: boolean ,
-    gender?: string ,
-    streak?: number ,
+    firstTime ?: boolean,
     password?:string
-    isAdmin? : boolean
 }
 
 export  interface genderProp{
@@ -73,3 +65,53 @@ export interface State{
       };
     message?: string
 }
+
+export interface Answer {
+    answer: string;
+    right: boolean;
+  }
+
+  export interface Qcm {
+    type: "radio" | "checkbox";
+    category: string;
+    question: string;
+    answers: Answer[];
+    language: string;
+    level: string;
+    tags: string[];
+  }
+
+  export interface SelectedQcm {
+    category: string;
+    question: string;
+    rightAnswers: Answer[];
+    answers: Answer[];
+  }
+
+  export interface QcmStore {
+    QcmsData: Qcm[];
+    start: boolean;
+    completed: boolean;
+    currentIndex: number;
+    time: number;
+    SelectedAnswers: SelectedQcm[];
+    score: number;
+    attemptSaved: boolean;
+    setAttemptSaved: (value: boolean) => void;
+    updateScore: (value: number) => void;
+    setStart: (value: boolean) => void;
+    SetSelectedAnswerCheckBox: (question: string, answer: Answer) => void;
+    SetSelectedAnswerRadio: (question: string, value: Answer) => void;
+    setCurrentIndex: (index: number) => void;
+    handleNextQuestion: () => void;
+    handlePreviousQuestion: () => void;
+    setQcmData: (dataQcm: Qcm[]) => void;
+    ResetQcmDetails: () => void;
+  }
+
+  export interface QuestionProps{
+    question : string,
+    type : 'radio' | 'checkbox',
+    answers : Answer[],
+     updateScore : (value : number) => void,
+  }
