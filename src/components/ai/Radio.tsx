@@ -7,15 +7,16 @@ import { useQcmStore } from "@/store/useQcm";
 
 const AiRadioCard = ({ question, type, answers, updateScore }: QuestionProps) => {
   const [seletedAnswer, setSeletedAnswer] = useState<string>("");
-  const {SetSelectedAnswerRadio}= useQcmStore()
+  const {SetSelectedAnswerRadio,SelectedAnswers}= useQcmStore()
+  const allSelectedAnswers = SelectedAnswers.flatMap((item) => item.answers.map((answer) => answer.answer.toLowerCase()));
+
   const handleAnswer = (
     e: React.ChangeEvent<HTMLInputElement>,
     ans: { answer: string; right: boolean }
   ) => {
     const isRight = ans.right;
     const { value, checked } = e.target;
-
-
+        if(allSelectedAnswers.includes(value.toLowerCase())) return
       if (checked) {
         const prevRightAnswer = answers.find(
           (answerObj) => answerObj.answer === seletedAnswer
@@ -58,23 +59,29 @@ const AiRadioCard = ({ question, type, answers, updateScore }: QuestionProps) =>
       </div>
       <div>
         <ul className="space-y-2">
-          {answers.map(({ answer, right }, index) => (
-            <li key={index} className="flex   gap-3 items-baseline  ">
-              <input
-                onChange={(e) => handleAnswer(e, { answer, right })}
-                type={type}
-                name={question}
-                value={answer}
-                id={question + index}
-                className="radio"
-              />
-              <span className="font-dm font-normal  text-lg text-balance ">
-                <span>
-                {answer}
+          {answers.map(({ answer, right }, index) => {
+            const isSelected = allSelectedAnswers.includes(answer.toLowerCase())
+
+            return (
+                <li key={index} className="flex   gap-3 items-center ">
+                <input
+                  onChange={(e) => handleAnswer(e, { answer, right })}
+                  type={type}
+                  name={question}
+                  checked={isSelected}
+                  value={answer}
+                  id={question + index}
+                  aria-label={`Answer ${index + 1}`}
+                  className=""
+                />
+                <span className="font-dm font-normal  text-lg text-balance ">
+                  <span>
+                  {answer}
+                  </span>
                 </span>
-              </span>
-            </li>
-          ))}
+              </li>
+            )
+})}
         </ul>
       </div>
     </motion.div>

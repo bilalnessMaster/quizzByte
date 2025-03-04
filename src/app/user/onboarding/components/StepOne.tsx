@@ -1,5 +1,6 @@
 import { useBoarding } from "@/store/useBoarding";
 import { Calculator,  Atom, BookOpen, Globe, Feather, Code, Languages, Dna, History, FlaskConical } from "lucide-react";
+import { toast } from "sonner";
 
 const subjects = [
     { id: 1, icon: <Calculator />, name: "Mathématiques" },
@@ -16,13 +17,22 @@ const subjects = [
 
 const StepOne = () => {
     const {setSubject , setStep ,subject : mainSubject} = useBoarding()
+    const handleNext = () => {
+        if (mainSubject === '') {
+            toast.error('Veuillez choisir un sujet.');
+            return;
+        }
+
+        setStep(2);
+    };
+
   return (
             <div className="flex flex-col gap-4">
 
                 <div className="flex justify-center items-center text-2xl font-medium">
                     <h1>Je veux apprendre...</h1>
                 </div>
-                <ul className="container max-w-4xl grid grid-cols-4 gap-2  max-h-[500px] [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent),linear-gradient(to_top,transparent,black_10%,black_90%,transparent)] overflow-y-auto overflow-x-hidden scrollbar px-3" >
+                <ul className="container max-w-4xl grid grid-cols-4 gap-2  max-h-[500px]  overflow-y-auto overflow-x-hidden scrollbar px-3" >
                     {
                         subjects.map((subject , index) => (
                             <li key={index} className="bg-neutral-50">
@@ -46,7 +56,7 @@ const StepOne = () => {
                <button disabled={true} className="disabled:text-neutral-300">
                         Precedent
                </button>
-               <button className="cursor-pointer " onClick={() =>setStep(2)}>
+               <button className="cursor-pointer " onClick={handleNext}>
                     Suivant
                 </button>
             </div>
@@ -64,3 +74,4 @@ export default StepOne
                     <span></span>
                     </label>
                 </form> */}
+                // [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent),linear-gradient(to_top,transparent,black_10%,black_90%,transparent)]

@@ -17,7 +17,7 @@ const QcmsQuestions = () => {
   } = useQcmStore();
 
   return (
-    <div className="h-full w-full flex items-center justify-center">
+    <div className="h-full w-full flex items-center justify-center relative">
       {QcmsData.map((item: Qcm, index: number) => {
         return (
           currentIndex === index && (
@@ -44,7 +44,7 @@ const QcmsQuestions = () => {
       })}
       <div className="flex gap-2 absolute bottom-11 right-10">
         <button
-          disabled={true}
+        disabled={currentIndex === 0}
           onClick={handlePreviousQuestion}
           className="size-10 rounded-full bg-gris/25 flex items-center disabled:bg-red-500 disabled:cursor-not-allowed justify-center"
         >
@@ -63,7 +63,7 @@ const QcmsQuestions = () => {
           <span
             key={index}
             className={cn(
-              "inline-flex flex-1 h-2  bg-gris/75",{"bg-[#DD86FF]" : index <= currentIndex }
+              "inline-flex flex-1 h-2  bg-neutral-200/55 rounded",{"bg-[#DD86FF]" : index <= currentIndex }
             )}
           ></span>
         ))}

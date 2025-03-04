@@ -10,13 +10,20 @@ import {
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import male from '@/assests/gender/male.png'
-import female from '@/assests/gender/female.png'
+// import female from '@/assests/gender/female.png'
 import LinksItem from "./LinkItems";
 import { User } from "next-auth";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 const Logout = ({user,isOpen} : {user : User | undefined, isOpen : boolean}) => {
-    const nameGender = male.src.split('/').pop()?.split('.')[0]
-    const gender = user?.gender === nameGender ? male : female
+    const [isloading, setIsLoading] = useState(false);
+    const handleLogout = () => {
+        setIsLoading(true);
+        signOut()
+        setIsLoading(false);
+        // const nameGender = male.src.split('/').pop()?.split('.')[0]
+    }
+    // const gender = user?.gender === nameGender ? male : female
 
 
     return (
@@ -25,10 +32,10 @@ const Logout = ({user,isOpen} : {user : User | undefined, isOpen : boolean}) => 
      <div className="flex items-center text-xs  font-dm gap-3">
         <div className="w-7 rounded-full bg-gray-200/45 h-full  overflow-hidden ">
           <Image
-            src={gender}
+            src={male}
             className="h-7 object-cover w-7"
             width={238} height={318}
-            alt={`${user?.gender}`}
+            alt={`${'masd'}`}
           />
         </div>
         <div className={cn("leading-[1rem] font-semibold text-sm whitespace-nowrap opacity-0 capitalize  transition-opacity duration-200" ,{'opacity-100':isOpen })}>
@@ -52,10 +59,10 @@ const Logout = ({user,isOpen} : {user : User | undefined, isOpen : boolean}) => 
         <div className="flex items-center text-xs  font-dm gap-3">
         <div className="w-7 rounded-full bg-gris h-full  overflow-hidden ">
           <Image
-            src={gender}
+            src={male}
             className="h-7 object-cover w-7"
             width={238} height={318}
-            alt={`${user?.gender}`}
+            alt={`${'masd'}`}
           />
         </div>
         <div className={cn("leading-[1rem] font-medium whitespace-nowrap opacity-0 transition-opacity duration-200" ,{'opacity-100':isOpen})}>
@@ -74,7 +81,7 @@ const Logout = ({user,isOpen} : {user : User | undefined, isOpen : boolean}) => 
         </div>
 
 
-    <button className="flex gap-2 h-10 px-3 items-center text-xs font-semibold text-blue-950" onClick={()=>signOut()}>
+    <button disabled={isloading}  className="flex gap-2 h-10 px-3 items-center text-xs font-semibold text-blue-950" onClick={handleLogout}>
     <LogOut size={15} className="text-neutral-700" />
     <span>Log out</span>
     </button>

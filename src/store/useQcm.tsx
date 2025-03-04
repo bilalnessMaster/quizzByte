@@ -21,6 +21,8 @@ export const useQcmStore = create<QcmStore>((set, get) => ({
   setStart: (value: boolean) => set({ start: value }),
 
   SetSelectedAnswerCheckBox: (question: string, answer: Answer) => {
+    console.log(answer);
+    
     const { SelectedAnswers } = get();
     const updatedAnswers = SelectedAnswers.map((qcm) => {
       if (qcm.question.toLowerCase() === question.toLowerCase()) {
